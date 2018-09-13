@@ -7,7 +7,7 @@ namespace asbamboo\restfulApi\exception;
  * @author 李春寅 <licy2013@aliyun.com>
  * @since 2018年9月12日
  */
-class NotFoundApiException extends \Exception
+class NotFoundApiException extends ApiException
 {
     public function __construct(string $message="不好意思，你访问的API不存在。", \Exception $previous = null)
     {

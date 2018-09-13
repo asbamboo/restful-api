@@ -1,16 +1,23 @@
 <?php
 namespace asbamboo\restfulApi\apiStore;
 
-use asbamboo\di\ContainerAwareTrait;
+use asbamboo\di\ContainerInterface;
 
 /**
+ * api接口处理类接口。
+ * api仓库中所有的api类都应该实现这个接口
  *
  * @author 李春寅 <licy2013@aliyun.com>
  * @since 2018年9月12日
  */
 interface ApiClassInterface
 {
-    use ContainerAwareTrait;
+    /**
+     * use asbamboo\di\ContainerAwareTrait;
+     *
+     * @param ContainerInterface $Container
+     */
+    public function setContainer(ContainerInterface $Container) : void;
 
     /**
      * HTTP GET

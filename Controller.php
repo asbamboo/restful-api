@@ -6,6 +6,9 @@ use asbamboo\restfulApi\apiStore\ApiStoreInterface;
 use asbamboo\di\ContainerInterface;
 use asbamboo\http\ServerRequestInterface;
 use asbamboo\restfulApi\exception\ApiException;
+use asbamboo\restfulApi\document\DocumentInterface;
+use asbamboo\di\ContainerAwareTrait;
+use asbamboo\restfulApi\document\Document;
 
 /**
  *
@@ -14,13 +17,14 @@ use asbamboo\restfulApi\exception\ApiException;
  */
 class Controller implements ControllerInterface
 {
+    use ContainerAwareTrait;
+
     /**
      *
      * @var ApiStoreInterface
-     * @var ContainerInterface
      * @var ServerRequestInterface $Request
      */
-    private $ApiStore; private $Container; private $Request;
+    private $ApiStore; private $Request;
 
     /**
      *
@@ -28,10 +32,9 @@ class Controller implements ControllerInterface
      * @param ContainerInterface $Container
      * @param ServerRequestInterface $Request
      */
-    public function __construct(ApiStoreInterface $ApiStore, ContainerInterface $Container, ServerRequestInterface $Request)
+    public function __construct(ApiStoreInterface $ApiStore, ServerRequestInterface $Request)
     {
         $this->ApiStore     = $ApiStore;
-        $this->Container    = $Container;
         $this->Request      = $Request;
     }
 
@@ -44,29 +47,40 @@ class Controller implements ControllerInterface
     {
         try
         {
-            $result = ['code' => 0, 'message' => '', 'data' => []];
+            $result = ['code' => 0, 'message' => 'success', 'data' => []];
             $class  = $this->ApiStore->findApiClass($version, $path);
             $Api    = $this->Container->get($class);
             $method = $this->Request->getMethod();
-            if(class_exists($Api, $method)){
+            if(method_exists($Api, $method)){
                 $result['data'] = $Api->{$method}();
             }
         }catch(ApiException $e){
             $result['code']     = $e->getCode();
             $result['message']  = $e->getMessage();
         }finally{
-            return $this->ApiStore->makeResponse($result);
+            return $this->ApiStore->makeResponse($result['code'], $result['message'], $result['data']);
         }
     }
 
     /**
      *
-     * @param string $version
      * @param string $path
      * @return ResponseInterface
      */
-    public function doc(string $version, string $path = null): ResponseInterface
+    public function doc(string $version = '', string $path = ''): ResponseInterface
     {
-
+        /**
+         *
+         * @var DocumentInterface $Document
+         */
+        $Document       = $this->Container->get(DocumentInterface::class);
+        $api_versions   = $this->ApiStore->findApiVersions();
+        if(!in_array($version)){
+            return $Document->versionList();
+        }else if($path == ''){
+            return $Document->apiList($version);
+        }else{
+            return $Document->apiDetail($version, $path);
+        }
     }
 }

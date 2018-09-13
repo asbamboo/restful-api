@@ -1,6 +1,8 @@
 <?php
 namespace asbamboo\restfulApi\document;
 
+use asbamboo\http\ResponseInterface;
+
 /**
  * 文档生成器
  *  - 根据获取的api仓库中api类的注释信息解析生成文档。
@@ -11,16 +13,50 @@ namespace asbamboo\restfulApi\document;
 interface DocumentInterface
 {
     /**
-     * 获取文档模板文件皮肤
+     * 版本列表数组
      *
-     * @return string
+     * @return array
      */
-    public function getLayout() : string;
+    public function versionListArray() : array;
 
     /**
-     * 解析并生成路径为$path的文档
+     * 版本列表响应
      *
-     * @return string
+     * @return ResponseInterface
      */
-    public function parse(string $path = null): string;
+    public function versionListResponse() : ResponseInterface;
+
+    /**
+     * API接口列表数组
+     *
+     * @param string $version
+     * @return array
+     */
+    public function apiListArray(string $version) : array;
+
+    /**
+     * API接口列表响应
+     *
+     * @param string $version
+     * @return ResponseInterface
+     */
+    public function apiListResponse(string $version) : ResponseInterface;
+
+    /**
+     * API接口详情数组
+     *
+     * @param string $version
+     * @param string $path
+     * @return array
+     */
+    public function apiDetailArray(string $version, string $path) : array;
+
+    /**
+     * API接口详情响应
+     *
+     * @param string $version
+     * @param string $path
+     * @return ResponseInterface
+     */
+    public function apiDetailResponse(string $version, string $path) : ResponseInterface;
 }
