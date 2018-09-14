@@ -136,9 +136,9 @@ class ApiStore implements ApiStoreInterface
      * {@inheritDoc}
      * @see \asbamboo\restfulApi\apiStore\ApiStoreInterface::findApiVersions()
      */
-    public function findApiVersions() : array
+    public function findApiVersions(int $sort_type = 0) : array
     {
-        return str_replace('_', '.', array_diff(scandir($this->getDir(), 1), ['.', '..']));
+        return str_replace('_', '.', array_diff(scandir($this->getDir(), $sort_type), ['.', '..']));
     }
 
     /**
@@ -162,7 +162,7 @@ class ApiStore implements ApiStoreInterface
         $path   = implode('\\', $parse_paths);
         $class  =  $namespace . '\\' . $version . $path;
         if(!class_exists($class)){
-            $versions   = str_replace('_', '.', $this->findApiVersions());
+            $versions   = str_replace('_', '.', $this->findApiVersions(1));
             foreach($versions AS $test_version){
                 $class  = $namespace . '\\' . $test_version . $path;
                 if(class_exists($class) && $test_version < $version){

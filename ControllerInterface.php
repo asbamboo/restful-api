@@ -20,7 +20,7 @@ interface ControllerInterface
      * @param string $path  api uil
      * @return ResponseInterface
      */
-    public function doc(string $version, string $path = null): ResponseInterface;
+    public function doc(string $version = '', string $path = ''): ResponseInterface;
 
     /**
      * http请求一个api接口, 获取一个响应信息

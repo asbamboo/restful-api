@@ -58,11 +58,12 @@ interface ApiStoreInterface
     public function findApiClass(string $version, string $path) : string;
 
     /**
-     * 放回所有的api版本列表
+     * 返回所有的api版本列表
      *
+     * @param int $sort_type 0:按照版本号升序排列，1:按照版本号降序排列。
      * @return array
      */
-    public function findApiVersions() : array;
+    public function findApiVersions(int $sort_type = 0) : array;
 
     /**
      * 生成Response信息

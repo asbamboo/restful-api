@@ -1,7 +1,6 @@
 <?php
 namespace asbamboo\restfulApi\apiStore;
 
-use asbamboo\di\ContainerAwareTrait;
 use asbamboo\restfulApi\exception\NotFoundApiException;
 
 /**
@@ -13,8 +12,6 @@ use asbamboo\restfulApi\exception\NotFoundApiException;
  */
 abstract class ApiClassAbstract implements ApiClassInterface
 {
-    use ContainerAwareTrait;
-
     /**
      *
      * {@inheritDoc}

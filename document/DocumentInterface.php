@@ -2,6 +2,7 @@
 namespace asbamboo\restfulApi\document;
 
 use asbamboo\http\ResponseInterface;
+use asbamboo\restfulApi\apiStore\ApiStoreInterface;
 
 /**
  * 文档生成器
@@ -12,6 +13,13 @@ use asbamboo\http\ResponseInterface;
  */
 interface DocumentInterface
 {
+    /**
+     * 获取Api版本库信息
+     *
+     * @return ApiStoreInterface
+     */
+    public function getApiStore() : ApiStoreInterface;
+
     /**
      * 版本列表数组
      *

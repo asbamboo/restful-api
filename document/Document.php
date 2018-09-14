@@ -2,8 +2,8 @@
 namespace asbamboo\restfulApi\document;
 
 use asbamboo\http\ResponseInterface;
-use asbamboo\di\ContainerAwareTrait;
 use asbamboo\restfulApi\apiStore\ApiStoreInterface;
+use asbamboo\restfulApi\apiStore\ApiClassInterface;
 
 /**
  *
@@ -12,7 +12,11 @@ use asbamboo\restfulApi\apiStore\ApiStoreInterface;
  */
 class Document implements DocumentInterface
 {
-    use ContainerAwareTrait;
+    /**
+     *
+     * @var ApiStoreInterface
+     */
+    private $ApiStore;
 
     /**
      * 文档模板文件皮肤的路径
@@ -23,10 +27,12 @@ class Document implements DocumentInterface
 
     /**
      *
+     * @param ApiStoreInterface $ApiStore
      * @param string $layout
      */
-    public function __construct(string $layout = null)
+    public function __construct(ApiStoreInterface $ApiStore, string $layout = null)
     {
+        $this->ApiStore = $ApiStore;
         $this->layout   = $layout ?? __DIR__ . DIRECTORY_SEPARATOR . 'layout';
     }
 
@@ -35,9 +41,9 @@ class Document implements DocumentInterface
      *
      * @return ApiStoreInterface
      */
-    private function getApiStore() : ApiStoreInterface
+    public function getApiStore() : ApiStoreInterface
     {
-        return $this->Container->get(ApiStoreInterface::class);
+        return $this->ApiStore;
     }
 
     /**
@@ -47,7 +53,7 @@ class Document implements DocumentInterface
      */
     public function versionListArray()
     {
-//         return $this->getApiStore()->findApiVersions();
+        return $this->getApiStore()->findApiVersions(1);
     }
 
     /**
@@ -67,9 +73,56 @@ class Document implements DocumentInterface
      */
     public function apiListArray(string $version) : Array
     {
-        $dir    = $this->getApiStore()->getDir();
-
+        $api_lists      = [];
+        $dir            = $this->getApiStore()->getDir();
+        $api_versions   = $this->getApiStore()->findApiVersions(1);
+        foreach($api_versions AS $api_version){
+            if($api_version <= $version){
+                $version_dir    = rtrim($dir, DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR . str_replace('.', '_', $api_version);
+//                 $version_dir;
+            }
+        }
     }
+
+    private function readApiListInfo(string $version_dir) : array
+    {
+        $api_lists      = [];
+        $names          = array_diff(scandir($version_dir), ['.', '..']);
+
+        foreach($names AS $name){
+            $path   = rtrim($version_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $name;
+            if(is_dir( $path )){
+                $api_lists  = array_merge($api_lists, $this->readApiListInfo($path));
+                continue;
+            }
+            if(is_file($path)){
+                $path   = substr($path, 0 , '-4'/*.php*/); //截掉文件后缀名".php"
+            }
+            if(class_exists($path) && $path instanceof ApiClassInterface){
+                $api_info           = [];
+                $apiReflectionClass = new \ReflectionClass($path);
+                $apiReflectionClass->getDocComment();
+
+                /*
+                 * $apiReflectionClass 用注释指定数据结构的文件路径
+                 * 数据结构的文件路径 用注释表示数据字段的各种说明，
+                 *  - @result [post,put]表示那种接口状态下返回在结果里面
+                 *  - @method [post,put]表示接受哪些请求方式
+                 *  - @var 类型
+                 *  - @required 是否必须
+                 *  - @range 取值范围
+                 *  - @desc 描述
+                 */
+                // 接口说明（包括接口名称）
+                // 接口path
+                // 数据结构说明
+                // 接口的请求参数说明【post，delete，put等5个方式】
+                // 接口返回结果说明【post，delete，put等5个方式】
+            }
+        }
+        return $api_lists;
+    }
+
 
     /**
      *

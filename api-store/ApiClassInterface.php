@@ -13,13 +13,6 @@ use asbamboo\di\ContainerInterface;
 interface ApiClassInterface
 {
     /**
-     * use asbamboo\di\ContainerAwareTrait;
-     *
-     * @param ContainerInterface $Container
-     */
-    public function setContainer(ContainerInterface $Container) : void;
-
-    /**
      * HTTP GET
      * 不指定具体id时返回一个列表信息
      * 指定id时返回一个详情信息
