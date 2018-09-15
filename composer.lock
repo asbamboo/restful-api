@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "d76f2f223d099473cfbb113f1eb928f3",
@@ -53,12 +53,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/di.git",
-                "reference": "11099f5512dee169df765aed097a84d7c49a38f6"
+                "reference": "bc39f6a90d5abc9f1c715b8dfa427c2b744bd89e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/di/zipball/11099f5512dee169df765aed097a84d7c49a38f6",
-                "reference": "11099f5512dee169df765aed097a84d7c49a38f6",
+                "url": "https://api.github.com/repos/asbamboo/di/zipball/bc39f6a90d5abc9f1c715b8dfa427c2b744bd89e",
+                "reference": "bc39f6a90d5abc9f1c715b8dfa427c2b744bd89e",
                 "shasum": ""
             },
             "require": {
@@ -83,7 +83,7 @@
                 "source": "https://github.com/asbamboo/di/tree/1.0.0",
                 "issues": "https://github.com/asbamboo/di/issues"
             },
-            "time": "2018-09-10T03:24:55+00:00"
+            "time": "2018-09-13T13:56:46+00:00"
         },
         {
             "name": "asbamboo/http",
@@ -91,12 +91,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/asbamboo/http.git",
-                "reference": "de895e49fa5374dfcce068ca2d6a0f26689d726b"
+                "reference": "01e926fe09b691d376d451ffc16bc2a774f41262"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/asbamboo/http/zipball/de895e49fa5374dfcce068ca2d6a0f26689d726b",
-                "reference": "de895e49fa5374dfcce068ca2d6a0f26689d726b",
+                "url": "https://api.github.com/repos/asbamboo/http/zipball/01e926fe09b691d376d451ffc16bc2a774f41262",
+                "reference": "01e926fe09b691d376d451ffc16bc2a774f41262",
                 "shasum": ""
             },
             "require": {
@@ -121,7 +121,7 @@
                 "source": "https://github.com/asbamboo/http/tree/1.0.0",
                 "issues": "https://github.com/asbamboo/http/issues"
             },
-            "time": "2018-09-12T05:29:53+00:00"
+            "time": "2018-09-15T12:02:35+00:00"
         },
         {
             "name": "psr/http-message",

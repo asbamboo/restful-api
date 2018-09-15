@@ -162,7 +162,7 @@ class ApiStore implements ApiStoreInterface
         $path   = implode('\\', $parse_paths);
         $class  =  $namespace . '\\' . $version . $path;
         if(!class_exists($class)){
-            $versions   = str_replace('_', '.', $this->findApiVersions(1));
+            $versions   = str_replace('.', '_', $this->findApiVersions(1));
             foreach($versions AS $test_version){
                 $class  = $namespace . '\\' . $test_version . $path;
                 if(class_exists($class) && $test_version < $version){

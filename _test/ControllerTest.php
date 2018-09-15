@@ -9,7 +9,6 @@ use asbamboo\di\ServiceMappingCollection;
 use asbamboo\di\ServiceMapping;
 use asbamboo\restfulApi\Controller;
 use asbamboo\restfulApi\_test\fixtures\apiStore\v1_0_0\ApiFixed;
-use function asbamboo\restfulApi\apiStore\testfun;
 
 /**
  *
@@ -22,7 +21,6 @@ class ControlerTest extends TestCase
 
     public function setUp()
     {
-        testfun();
         $namespace          = 'asbamboo\\restfulApi\\_test\\fixtures\\apiStore\\';
         $dir                = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'api-store';
         $ServiceMappings    = new ServiceMappingCollection();

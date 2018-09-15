@@ -4,6 +4,8 @@ namespace asbamboo\restfulApi\document;
 use asbamboo\http\ResponseInterface;
 use asbamboo\restfulApi\apiStore\ApiStoreInterface;
 use asbamboo\restfulApi\apiStore\ApiClassInterface;
+use asbamboo\restfulApi\exception\NotFoundApiException;
+use asbamboo\http\TextResponse;
 
 /**
  *
@@ -33,7 +35,7 @@ class Document implements DocumentInterface
     public function __construct(ApiStoreInterface $ApiStore, string $layout = null)
     {
         $this->ApiStore = $ApiStore;
-        $this->layout   = $layout ?? __DIR__ . DIRECTORY_SEPARATOR . 'layout';
+        $this->layout   = $layout ?? __DIR__ . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR . 'template.html';
     }
 
     /**
@@ -51,19 +53,9 @@ class Document implements DocumentInterface
      * {@inheritDoc}
      * @see \asbamboo\restfulApi\document\DocumentInterface::versionListArray()
      */
-    public function versionListArray()
+    public function versionListArray() : array
     {
         return $this->getApiStore()->findApiVersions(1);
-    }
-
-    /**
-     *
-     * {@inheritDoc}
-     * @see \asbamboo\restfulApi\document\DocumentInterface::versionList()
-     */
-    public function versionListResponse() : ResponseInterface
-    {
-
     }
 
     /**
@@ -79,11 +71,66 @@ class Document implements DocumentInterface
         foreach($api_versions AS $api_version){
             if($api_version <= $version){
                 $version_dir    = rtrim($dir, DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR . str_replace('.', '_', $api_version);
-//                 $version_dir;
+                $api_lists      = array_merge($this->readApiListInfo($version_dir), $api_lists);
             }
         }
+        ksort($api_lists);
+        return $api_lists;
     }
 
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\restfulApi\document\DocumentInterface::apiDetailInfo()
+     */
+    public function apiDetailInfo(string $version, string $path) : ApiClassDocInterface
+    {
+        $namespace      = rtrim($this->getApiStore()->getNamespace(), '\\');
+        $api_versions   = $this->getApiStore()->findApiVersions(1);
+
+        $parse_paths    = explode('/', rtrim($path, '/'));
+        foreach($parse_paths AS $key => $parse_path){
+            $parse_paths[$key]  = implode('', array_map('ucfirst', explode('-', strtolower($parse_path))));
+        }
+        $path           = implode('\\', $parse_paths);
+
+        foreach($api_versions AS $api_version){
+            if($api_version <= $version){
+                $api_version    = str_replace('.', '_', $api_version);
+                $class      = $namespace . '\\' .$api_version . $path;
+                if(class_exists($class)){
+                    $ApiClassDoc = new ApiClassDoc($class, $namespace);
+                    return $ApiClassDoc;
+                }
+            }
+        }
+        throw new NotFoundApiException(sprintf('api 接口不存在，版本[%s], 资源[%s]', $version, $path));
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\restfulApi\document\DocumentInterface::apiDetail()
+     */
+    public function response(string $version='', string $path='') : ResponseInterface
+    {
+        $all_versions       = $this->versionListArray();
+        $current_version    = $version == '' ? current($all_versions) : $version;
+        $api_lists          = $this->apiListArray($current_version);
+        $ApiClassDoc        = $path == '' ? null : $this->apiDetailInfo($version, $path);
+        ob_start();
+        include $this->layout;
+        $html   = ob_get_contents();
+        ob_end_clean();
+        return new TextResponse($html);
+    }
+
+    /**
+     * 读取Api列表的帮助信息
+     *
+     * @param string $version_dir
+     * @return array
+     */
     private function readApiListInfo(string $version_dir) : array
     {
         $api_lists      = [];
@@ -95,63 +142,20 @@ class Document implements DocumentInterface
                 $api_lists  = array_merge($api_lists, $this->readApiListInfo($path));
                 continue;
             }
+            $class  = '';
             if(is_file($path)){
-                $path   = substr($path, 0 , '-4'/*.php*/); //截掉文件后缀名".php"
+                $storedir_length    = strlen($this->getApiStore()->getDir());
+                $ext_pos            = '-4'; //截掉文件后缀名".php"
+                $class              = substr($path, $storedir_length, $ext_pos);
+                $class              = str_replace(DIRECTORY_SEPARATOR, '\\', $class);
+                $class              = rtrim($this->getApiStore()->getNamespace(), '\\') . $class;
             }
-            if(class_exists($path) && $path instanceof ApiClassInterface){
-                $api_info           = [];
-                $apiReflectionClass = new \ReflectionClass($path);
-                $apiReflectionClass->getDocComment();
 
-                /*
-                 * $apiReflectionClass 用注释指定数据结构的文件路径
-                 * 数据结构的文件路径 用注释表示数据字段的各种说明，
-                 *  - @result [post,put]表示那种接口状态下返回在结果里面
-                 *  - @method [post,put]表示接受哪些请求方式
-                 *  - @var 类型
-                 *  - @required 是否必须
-                 *  - @range 取值范围
-                 *  - @desc 描述
-                 */
-                // 接口说明（包括接口名称）
-                // 接口path
-                // 数据结构说明
-                // 接口的请求参数说明【post，delete，put等5个方式】
-                // 接口返回结果说明【post，delete，put等5个方式】
+            if(class_exists($class) && in_array(ApiClassInterface::class, class_implements($class))){
+                $ApiClassDoc                        = new ApiClassDoc($class, $this->getApiStore()->getNamespace());
+                $api_lists[$ApiClassDoc->getPath()] = $ApiClassDoc;
             }
         }
         return $api_lists;
-    }
-
-
-    /**
-     *
-     * {@inheritDoc}
-     * @see \asbamboo\restfulApi\document\DocumentInterface::apiList()
-     */
-    public function apiListResponse(string $version) : ResponseInterface
-    {
-
-    }
-
-    /**
-     *
-     * {@inheritDoc}
-     * @see \asbamboo\restfulApi\document\DocumentInterface::apiDetailArray()
-     */
-    public function apiDetailArray(string $version, string $path) : Array
-    {
-//         $dir    = $this->getApiStore()->getDir();
-
-    }
-
-    /**
-     *
-     * {@inheritDoc}
-     * @see \asbamboo\restfulApi\document\DocumentInterface::apiDetail()
-     */
-    public function apiDetailResponse(string $version, string $path) : ResponseInterface
-    {
-
     }
 }

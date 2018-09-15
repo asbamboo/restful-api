@@ -1,8 +1,6 @@
 <?php
 namespace asbamboo\restfulApi\apiStore;
 
-use asbamboo\di\ContainerInterface;
-
 /**
  * api接口处理类接口。
  * api仓库中所有的api类都应该实现这个接口

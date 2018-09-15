@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh_CN">
+  <head>
+    <meta charset="utf-8">
+    <title>API 文档</title>
+    <style>
+        .container { 
+            float:left;
+        }
+        .left {
+            width: 30%;
+        }
+    </style>
+  </head>
+  <body>
+  	<div class="left container">
+  		<div class="version-list">
+  			<select name="version">
+  				<?php FOREACH($all_versions AS $version):?>
+  					<?php IF($version == $current_version):?>
+  						<option value="<?=$version?>" selected><?=$version?></option>
+  					<?php ELSE:?>
+  						<option value="<?=$version?>"><?=$version?></option>
+  					<?php ENDIF;?>
+  				<?php ENDFOREACH;?>
+  			</select>
+  		</div>
+        <div class="api-list">
+            <ul>
+                <?php FOREACH($api_lists AS $api):?>
+                	<?php IF($api->isDelete() == false):?>
+	                	<li><label> <?=$api->getName()?> <input type="radio" value="<?=$api->getPath()?>" /></label></li>
+                	<?php ENDIF;?>
+                <?php ENDFOREACH;?>
+            </ul>
+        </div>
+  	</div>
+  	<div class="right container">
+        <?php IF($ApiClassDoc):?>
+        	<div class="api-title">
+        		<h1><?=$ApiClassDoc->getName()?></h1>
+        		<p><b>PATH:</b><?=$ApiClassDoc->getPath()?></p>
+                <?php IF($api->isDelete()):?>
+                	<p><b>注意:</b> 该接口已经废弃。</p>
+                <?php ENDIF;?>
+        	</div>
+            <?php IF($ApiClassDoc->getApiEntityClassDoc()):?>
+	        	<div class="api-entity">
+	                <h2>数据结构</h2>
+	                <div>
+	                    <table>
+	                        <tr>
+	                            <th>字段</th>
+	                            <th>类型</th>
+	                            <th>取值范围</th>
+	                            <th>必须</th>
+	                            <th>说明</th>
+	                        </tr>
+                            <?php FOREACH($ApiClassDoc->getApiEntityClassDoc()->getEntityPropertyDocs() AS $ApiEntityPropertyDoc):?>
+		                        <tr>
+		                            <td><?=$ApiEntityPropertyDoc->getName()?></td>
+		                            <td><?=$ApiEntityPropertyDoc->getVar()?></td>
+		                            <td><?=$ApiEntityPropertyDoc->getRange()?></td>
+		                            <td><?=$ApiEntityPropertyDoc->getRequired()?></td>
+		                            <td><?=$ApiEntityPropertyDoc->getDesc()?></td>
+		                        </tr>
+                            <?php ENDFOREACH;?>
+	                    </table>
+	                </div>
+	            </div>
+            <?php ENDIF;?>
+        	<div class="api-get">
+                <h2>GET请求</h2>
+                <h3>请求参数</h3>
+	                <div>
+	                    <table>
+	                        <tr>
+	                            <th>字段</th>
+	                            <th>类型</th>
+	                            <th>取值范围</th>
+	                            <th>必须（可能每个请求方式的状态不一样de）</th>
+	                            <th>说明</th>
+	                        </tr>
+                            <?php FOREACH($ApiClassDoc->getApiEntityClassDoc()->getEntityPropertyDocs() AS $ApiEntityPropertyDoc):?>
+		                        <tr>
+		                            <td><?=$ApiEntityPropertyDoc->getName()?></td>
+		                            <td><?=$ApiEntityPropertyDoc->getVar()?></td>
+		                            <td><?=$ApiEntityPropertyDoc->getRange()?></td>
+		                            <td><?=$ApiEntityPropertyDoc->getRequired()?></td>
+		                            <td><?=$ApiEntityPropertyDoc->getDesc()?></td>
+		                        </tr>
+                            <?php ENDFOREACH;?>
+	                    </table>
+	                </div>
+            </div>
+        	<div class="api-post">
+                ....
+            </div>
+        	<div class="api-put">
+                ....
+            </div>
+        	<div class="api-patch">
+                ....
+            </div>
+        	<div class="api-delete">
+                ....
+            </div>
+        <?php ENDIF;?>
+    </div>
+  </body>
+</html>

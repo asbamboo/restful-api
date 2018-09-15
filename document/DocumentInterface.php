@@ -28,36 +28,21 @@ interface DocumentInterface
     public function versionListArray() : array;
 
     /**
-     * 版本列表响应
-     *
-     * @return ResponseInterface
-     */
-    public function versionListResponse() : ResponseInterface;
-
-    /**
      * API接口列表数组
      *
      * @param string $version
-     * @return array
+     * @return ApiClassDocInterface[] 数组的可以是ApiClassDocInterface::getPath()
      */
     public function apiListArray(string $version) : array;
 
     /**
-     * API接口列表响应
-     *
-     * @param string $version
-     * @return ResponseInterface
-     */
-    public function apiListResponse(string $version) : ResponseInterface;
-
-    /**
-     * API接口详情数组
+     * API接口详情
      *
      * @param string $version
      * @param string $path
-     * @return array
+     * @return ApiClassDocInterface
      */
-    public function apiDetailArray(string $version, string $path) : array;
+    public function apiDetailInfo(string $version, string $path) : ApiClassDocInterface;
 
     /**
      * API接口详情响应
@@ -66,5 +51,5 @@ interface DocumentInterface
      * @param string $path
      * @return ResponseInterface
      */
-    public function apiDetailResponse(string $version, string $path) : ResponseInterface;
+    public function response(string $version = '', string $path = '') : ResponseInterface;
 }
