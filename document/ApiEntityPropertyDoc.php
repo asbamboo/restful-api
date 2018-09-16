@@ -43,9 +43,9 @@ class ApiEntityPropertyDoc implements ApiEntityPropertyDocInterface
     {
         $document   = $property->getDocComment();
 
-        if(preg_match_all('#@(\w+)\s(.*)[\r\n]#siU', $document, $matches)){
+        if(preg_match_all('#@(\w+)(\s(.*))?[\r\n]#siU', $document, $matches)){
             foreach($matches[1] AS $index => $key){
-                $this->docs[$key][]   = trim($matches[2][$index]);
+                $this->docs[$key][]   = trim($matches[3][$index]);
             }
         }
     }

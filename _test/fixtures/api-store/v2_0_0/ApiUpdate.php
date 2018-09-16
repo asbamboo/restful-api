@@ -13,5 +13,48 @@ use asbamboo\restfulApi\apiStore\ApiClassAbstract;
  */
 class ApiUpdate extends ApiClassAbstract
 {
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\restfulApi\apiStore\ApiClassInterface::get()
+     */
+    public function get()
+    {
+    }
 
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\restfulApi\apiStore\ApiClassInterface::post()
+     */
+    public function post()
+    {
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\restfulApi\apiStore\ApiClassInterface::put()
+     */
+    public function put()
+    {
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\restfulApi\apiStore\ApiClassInterface::patch()
+     */
+    public function patch()
+    {
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\restfulApi\apiStore\ApiClassInterface::delete()
+     */
+    public function delete()
+    {
+    }
 }

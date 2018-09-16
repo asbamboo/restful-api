@@ -16,6 +16,7 @@ abstract class ApiClassAbstract implements ApiClassInterface
      *
      * {@inheritDoc}
      * @see \asbamboo\restfulApi\apiStore\ApiClassInterface::get()
+     * @closed
      */
     public function get()
     {
@@ -26,6 +27,7 @@ abstract class ApiClassAbstract implements ApiClassInterface
      *
      * {@inheritDoc}
      * @see \asbamboo\restfulApi\apiStore\ApiClassInterface::post()
+     * @closed
      */
     public function post()
     {
@@ -36,6 +38,7 @@ abstract class ApiClassAbstract implements ApiClassInterface
      *
      * {@inheritDoc}
      * @see \asbamboo\restfulApi\apiStore\ApiClassInterface::put()
+     * @closed
      */
     public function put()
     {
@@ -45,6 +48,7 @@ abstract class ApiClassAbstract implements ApiClassInterface
     /**
      *
      * {@inheritDoc}
+     * @closed
      * @see \asbamboo\restfulApi\apiStore\ApiClassInterface::patch()
      */
     public function patch()
@@ -56,6 +60,7 @@ abstract class ApiClassAbstract implements ApiClassInterface
      *
      * {@inheritDoc}
      * @see \asbamboo\restfulApi\apiStore\ApiClassInterface::delete()
+     * @closed
      */
     public function delete()
     {

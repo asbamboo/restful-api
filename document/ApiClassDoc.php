@@ -21,6 +21,13 @@ class ApiClassDoc implements ApiClassDocInterface
     private $path;
 
     /**
+     * 允许的http请求方式
+     *
+     * @var array
+     */
+    private $allow_methods  = [];
+
+    /**
      *
      * @var ApiEntityClassDocInterface|null
      */
@@ -35,6 +42,7 @@ class ApiClassDoc implements ApiClassDocInterface
     {
         $this->parseDoc($api_class);
         $this->parsePath($api_class, $api_namespace);
+        $this->parseAllowMethods($api_class);
     }
 
     /**
@@ -47,16 +55,16 @@ class ApiClassDoc implements ApiClassDocInterface
         $Reflection = new \ReflectionClass($api_class);
         $document   = $Reflection->getDocComment();
 
-        if(preg_match_all('#@(\w+)\s(.*)[\r\n]#siU', $document, $matches)){
+        if(preg_match_all('#@(\w+)(\s(.*))?[\r\n]#siU', $document, $matches)){
             foreach($matches[1] AS $index => $key){
-                $this->docs[$key][]   = trim($matches[2][$index]);
+                $this->docs[$key][]   = trim($matches[3][$index]);
             }
         }
     }
 
     /**
      *
-     * @param $parsing $api_class api类名
+     * @param string $api_class api类名
      * @param string $api_namespace API 存放的命名空间
      */
     private function parsePath(/*ApiClassInterface*/ $api_class, string $api_namespace)
@@ -69,6 +77,24 @@ class ApiClassDoc implements ApiClassDocInterface
         },$parsing);
 
         $this->path = implode('/', $parsing);
+    }
+
+    /**
+     * 解析允许的http请求类型
+     *
+     * @param string $api_class
+     */
+    private function parseAllowMethods(/*ApiClassInterface*/ $api_class)
+    {
+        foreach(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] AS $method){
+            if(method_exists($api_class, $method)){
+                $ReflectionMethod   = new \ReflectionMethod($api_class, $method);
+                $document           = $ReflectionMethod->getDocComment();
+                if(!preg_match('#@closed(\s.*)?[\r\n]#siU', $document)){
+                    $this->allow_methods[]    = $method;
+                }
+            }
+        }
     }
 
     /**
@@ -99,6 +125,26 @@ class ApiClassDoc implements ApiClassDocInterface
     public function isDelete() : bool
     {
         return isset($this->docs['delete']);
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\restfulApi\document\ApiClassDocInterface::hasMethod()
+     */
+    public function hasMethod($method) : bool
+    {
+        return in_array($method, $this->allow_methods);
+    }
+
+    /**
+     *
+     * {@inheritDoc}
+     * @see \asbamboo\restfulApi\document\ApiClassDocInterface::getAllowMethods()
+     */
+    public function getAllowMethods() : array
+    {
+        return $this->allow_methods;
     }
 
     /**

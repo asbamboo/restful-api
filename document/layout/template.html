@@ -53,7 +53,7 @@
 	                            <th>字段</th>
 	                            <th>类型</th>
 	                            <th>取值范围</th>
-	                            <th>必须</th>
+	                            <th>默认值</th>
 	                            <th>说明</th>
 	                        </tr>
                             <?php FOREACH($ApiClassDoc->getApiEntityClassDoc()->getEntityPropertyDocs() AS $ApiEntityPropertyDoc):?>
@@ -61,7 +61,7 @@
 		                            <td><?=$ApiEntityPropertyDoc->getName()?></td>
 		                            <td><?=$ApiEntityPropertyDoc->getVar()?></td>
 		                            <td><?=$ApiEntityPropertyDoc->getRange()?></td>
-		                            <td><?=$ApiEntityPropertyDoc->getRequired()?></td>
+		                            <td><?=$ApiEntityPropertyDoc->getDefaultValue()?></td>
 		                            <td><?=$ApiEntityPropertyDoc->getDesc()?></td>
 		                        </tr>
                             <?php ENDFOREACH;?>
@@ -69,42 +69,76 @@
 	                </div>
 	            </div>
             <?php ENDIF;?>
-        	<div class="api-get">
-                <h2>GET请求</h2>
-                <h3>请求参数</h3>
+           	<?php FOREACH($ApiClassDoc->getAllowMethods() AS $method):?>
+           		<?php $request_docs = [];?>
+           		<?php $result_docs = [];?>
+				<?php FOREACH($ApiClassDoc->getApiEntityClassDoc()->getEntityPropertyDocs() AS $ApiEntityPropertyDoc):?>
+					<?php IF(in_array($method, $ApiEntityPropertyDoc->getMethod())):?>
+						<?php $request_docs[] = $ApiEntityPropertyDoc; ?>
+					<?php ENDIF;?>
+					<?php IF(in_array($method, $ApiEntityPropertyDoc->getResult())):?>
+						<?php $result_docs[] = $ApiEntityPropertyDoc; ?>
+					<?php ENDIF;?>
+				<?php ENDFOREACH;?>
+	        	<div class="api-method <?=$method?>">
+	                <h2><?=$method?>请求</h2>
+<!-- 	                <h3>公共参数</h3>
 	                <div>
-	                    <table>
-	                        <tr>
-	                            <th>字段</th>
-	                            <th>类型</th>
-	                            <th>取值范围</th>
-	                            <th>必须（可能每个请求方式的状态不一样de）</th>
-	                            <th>说明</th>
-	                        </tr>
-                            <?php FOREACH($ApiClassDoc->getApiEntityClassDoc()->getEntityPropertyDocs() AS $ApiEntityPropertyDoc):?>
-		                        <tr>
-		                            <td><?=$ApiEntityPropertyDoc->getName()?></td>
-		                            <td><?=$ApiEntityPropertyDoc->getVar()?></td>
-		                            <td><?=$ApiEntityPropertyDoc->getRange()?></td>
-		                            <td><?=$ApiEntityPropertyDoc->getRequired()?></td>
-		                            <td><?=$ApiEntityPropertyDoc->getDesc()?></td>
-		                        </tr>
-                            <?php ENDFOREACH;?>
-	                    </table>
+	                	...
 	                </div>
-            </div>
-        	<div class="api-post">
-                ....
-            </div>
-        	<div class="api-put">
-                ....
-            </div>
-        	<div class="api-patch">
-                ....
-            </div>
-        	<div class="api-delete">
-                ....
-            </div>
+ -->	                <?php IF(!empty($request_docs)):?>
+		                <h3>请求参数</h3>
+		                <div>
+		                    <table>
+		                        <tr>
+		                            <th>字段</th>
+		                            <th>类型</th>
+		                            <th>取值范围</th>
+		                            <th>必须</th>
+		                            <th>默认值</th>
+		                            <th>说明</th>
+		                        </tr>
+								<?php FOREACH($request_docs AS $ApiEntityPropertyDoc):?>
+									<tr>
+									    <td><?=$ApiEntityPropertyDoc->getName()?></td>
+									    <td><?=$ApiEntityPropertyDoc->getVar()?></td>
+									    <td><?=$ApiEntityPropertyDoc->getRange()?></td>
+									    <td><?=$ApiEntityPropertyDoc->getRequired()?></td>
+									    <td><?=$ApiEntityPropertyDoc->getDefaultValue()?></td>
+									    <td><?=$ApiEntityPropertyDoc->getDesc()?></td>
+									</tr>
+								<?php ENDFOREACH;?>
+		                    </table>
+		                </div>
+	                <?php ENDIF;?>
+	                <?php IF(!empty($result_docs)):?>
+		                <h3>返回参数</h3>
+		                <div>
+		                    <table>
+		                        <tr>
+		                            <th>字段</th>
+		                            <th>类型</th>
+		                            <th>取值范围</th>
+		                            <th>必须</th>
+		                            <th>默认值</th>
+		                            <th>说明</th>
+		                        </tr>
+								<?php FOREACH($result_docs AS $ApiEntityPropertyDoc):?>
+									<tr>
+									    <td><?=$ApiEntityPropertyDoc->getName()?></td>
+									    <td><?=$ApiEntityPropertyDoc->getVar()?></td>
+									    <td><?=$ApiEntityPropertyDoc->getRange()?></td>
+									    <td><?=$ApiEntityPropertyDoc->getRequired()?></td>
+									    <td><?=$ApiEntityPropertyDoc->getDesc()?></td>
+									</tr>
+								<?php ENDFOREACH;?>
+		                    </table>
+		                </div>
+	                <?php ENDIF;?>
+	                <h3>请求示例</h3>
+	                <h3>返回示例</h3>
+	            </div>
+            <?php ENDFOREACH;?>
         <?php ENDIF;?>
     </div>
   </body>

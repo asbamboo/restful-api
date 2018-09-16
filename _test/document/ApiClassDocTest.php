@@ -7,6 +7,7 @@ use asbamboo\restfulApi\_test\fixtures\apiStore\v1_0_0\ApiFixed;
 use asbamboo\restfulApi\_test\fixtures\apiStore\v1_0_0\ApiUpdate;
 use \asbamboo\restfulApi\_test\fixtures\apiEntity\ApiUpdate AS ApiUpdateEntity;
 use asbamboo\restfulApi\document\ApiEntityClassDocInterface;
+use asbamboo\restfulApi\_test\fixtures\apiStore\v2_0_0\ApiDelete;
 
 /**
  *
@@ -28,6 +29,28 @@ class ApiClassDocTest extends TestCase
     {
         $ApiClassDoc    = new ApiClassDoc(ApiFixed::class, 'asbamboo\\restfulApi\\_test\\fixtures\\apiStore');
         $this->assertEquals('/api-fixed', $ApiClassDoc->getPath());
+    }
+
+    public function testIsDelete()
+    {
+        $ApiClassDoc    = new ApiClassDoc(ApiFixed::class, 'asbamboo\\restfulApi\\_test\\fixtures\\apiStore');
+        $this->assertFalse($ApiClassDoc->isDelete());
+
+        $ApiClassDoc    = new ApiClassDoc(ApiDelete::class, 'asbamboo\\restfulApi\\_test\\fixtures\\apiStore');
+        $this->assertTrue($ApiClassDoc->isDelete());
+    }
+
+    public function testHasMethod()
+    {
+        $ApiClassDoc    = new ApiClassDoc(ApiFixed::class, 'asbamboo\\restfulApi\\_test\\fixtures\\apiStore');
+        $this->assertFalse($ApiClassDoc->hasMethod('POST'));
+        $this->assertTrue($ApiClassDoc->hasMethod('GET'));
+    }
+
+    public function testGetAllowMethods()
+    {
+        $ApiClassDoc    = new ApiClassDoc(ApiFixed::class, 'asbamboo\\restfulApi\\_test\\fixtures\\apiStore');
+        $this->assertEquals(['GET'], $ApiClassDoc->getAllowMethods());
     }
 
     public function testGetEntityClass()

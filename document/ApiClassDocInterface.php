@@ -34,6 +34,28 @@ interface ApiClassDocInterface
     public function isDelete() : bool;
 
     /**
+     * 判断APi接口是否接受某个http请求。
+     *  - 如果api接口不接受某个http请求，那么这个接口应该抛出异常[NotFoundApiException].
+     *  - 参见 asbamboo\restfulApi\apiStore\ApiClassAbstract
+     *  - 如果接口不接受某http请求方式，那么应该提供注释标记"@closed"
+     *
+     * @param string $method http请求method [GET, POST, PUT, PATCH, DELETE]
+     * @return bool
+     */
+    public function hasMethod(string $method) : bool;
+
+    /**
+     * 获取接口允许的http请求方式
+     *  - 如果api接口不接受某个http请求，那么这个接口应该抛出异常[NotFoundApiException].
+     *  - 参见 asbamboo\restfulApi\apiStore\ApiClassAbstract
+     *  - 如果接口不接受某http请求方式，那么应该提供注释标记"@closed"
+     *  - http请求method [GET, POST, PUT, PATCH, DELETE]
+     *
+     * @return array
+     */
+    public function getAllowMethods() : array;
+
+    /**
      * 反应数据结构的实体类
      * 应该解析ApiClass的注释中的 "@entity" 信息
      *  - 该类的注释行也是一个帮助文档信息
