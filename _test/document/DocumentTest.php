@@ -71,7 +71,7 @@ class DocumentTest extends TestCase
     public function testResponse()
     {
         $Document       = new Document($this->ApiStore);
-        var_dump($Document->response('v2.0.0', '/api-update')->getBody()->getContents());
-        exit;
+//         var_dump($Document->response('v2.0.0', '/api-update')->getBody()->getContents());
+//         exit;
     }
 }
